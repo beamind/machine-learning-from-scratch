@@ -8,6 +8,7 @@ if __name__ == "__main__":
     model = LinearRegression.LinearRegression(learning_rate=0.01,
                                               batch_size=10,
                                               train_step=10000,
+                                              alpha=0.00001,
                                               rand_var=0.0001,
                                               rand_seed=0,
                                               silent=False)
