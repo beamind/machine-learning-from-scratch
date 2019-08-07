@@ -32,20 +32,21 @@ class LinearRegression(object):
         self.rand_seed = rand_seed
         self.silent = silent
         self.weight = None
+        self.bias = None
         self.loss = 0
 
     def fit(self, x, y):
         """
         Args:
         ------
-        x: features of training data, assuming the first column
-           is all 1. shape=[n_examples, n_features].
-        y: targets of training data. shape=[n_examples].
+        x: features of training data. shape = [n_examples, n_features].
+        y: targets of training data. shape = [n_examples].
         """
 
         n, m = x.shape
         np.random.seed(self.rand_seed)
         self.weight = np.random.randn(m) * math.sqrt(self.rand_var)
+        self.bias = 0
         for i in range(self.train_step):
             batch_index = np.random.randint(0, n, self.bsz)
             x_batch, y_batch = x[batch_index], y[batch_index]
@@ -56,17 +57,18 @@ class LinearRegression(object):
 
     def _get_gradients(self, x, y):
         """gradients calculation using batch examples."""
-        y_pred = np.dot(x, self.weight)
+        y_pred = np.dot(x, self.weight) + self.bias
         error = np.expand_dims(y_pred - y, axis=1)
-        loss = np.square(error).mean()
-        if self.alpha > 0.0:
-            loss += self.alpha * np.square(self.weight[1:]).sum()
-        gradients = (error * x).mean(axis=0)
-        if self.alpha > 0.0:
-            # L2 regularization don't penalize bias.
-            gradients += self.alpha * np.concatenate([[0], self.weight[1:]], axis=0)
+        loss = 0.5 * np.square(error).mean() + 0.5 * self.alpha * np.square(self.weight).sum()
+        gradients_weight = (error * x).mean(axis=0) + self.alpha * self.weight
+        gradients_bias = np.mean(error)
+        gradients = (gradients_weight, gradients_bias)
         return gradients, loss
 
     def _apply_gradients(self, g):
         """update weight using gradients."""
-        self.weight -= self.lr * g
+        self.weight -= self.lr * g[0]
+        self.bias -= self.lr * g[1]
+
+    def predict(self, x):
+        return np.dot(x, self.weight) + self.bias
