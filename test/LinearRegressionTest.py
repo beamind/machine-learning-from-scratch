@@ -1,5 +1,6 @@
 import numpy as np
 from dataset.create_toy_data import toy_data_for_linear_regression
+from utils.preprocessing import standardize
 from linear_model import LinearRegression
 
 if __name__ == "__main__":
