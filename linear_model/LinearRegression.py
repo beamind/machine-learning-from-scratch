@@ -1,9 +1,9 @@
-import math
 import matplotlib.pyplot as plt
 import numpy as np
+from linear_model.LinearModel import LinearModel
 
 
-class LinearRegression(object):
+class LinearRegression(LinearModel):
     """Linear least square with L2 regularization, optimized with SGD.
 
     Args:
@@ -17,44 +17,10 @@ class LinearRegression(object):
     silent: boolean, whether to print training information in training process.
     """
 
-    def __init__(self,
-                 learning_rate=0.001,
-                 batch_size=10,
-                 train_step=10000,
-                 alpha=0.0,
-                 rand_var=0.01,
-                 rand_seed=0,
-                 silent=False):
-        self.lr = learning_rate
-        self.bsz = batch_size
-        self.train_step = train_step
-        self.alpha = alpha
-        self.rand_var = rand_var
-        self.rand_seed = rand_seed
-        self.silent = silent
-        self.weight = None
-        self.bias = None
-        self.loss = 0
-
-    def fit(self, x, y):
-        """
-        Args:
-        ------
-        x: features of training data. shape = [n_examples, n_features].
-        y: targets of training data. shape = [n_examples].
-        """
-
-        n, m = x.shape
-        np.random.seed(self.rand_seed)
-        self.weight = np.random.randn(m) * math.sqrt(self.rand_var)
-        self.bias = 0
-        for i in range(self.train_step):
-            batch_index = np.random.randint(0, n, self.bsz)
-            x_batch, y_batch = x[batch_index], y[batch_index]
-            gradients, self.loss = self._get_gradients(x_batch, y_batch)
-            self._apply_gradients(gradients)
-            if not self.silent and i % 100 == 0:
-                print("step {}: ,loss: {:.5f}".format(i, self.loss))
+    def __init__(self, learning_rate=0.001, batch_size=10, train_step=10000, alpha=0.0,
+                 rand_var=0.01, rand_seed=0, silent=False):
+        super(LinearRegression, self).__init__(learning_rate, batch_size, train_step,
+                                               alpha, rand_var, rand_seed, silent)
 
     def _get_gradients(self, x, y):
         """gradients calculation using batch examples."""
@@ -76,7 +42,7 @@ class LinearRegression(object):
 
     def plot(self, x, y, num=10):
         n, m = x.shape
-        assert n >= 10, "Not enough samples to plot, {} is needed, only find {}.".format(num, n)
+        assert n >= num, "Not enough samples to plot, {} is needed, only find {}.".format(num, n)
         assert m == 1, "Dimension of `x` is {}, but 1 is needed, only support 2-D plot.".format(m)
         plt.figure()
         idx = np.random.randint(0, n, num)
