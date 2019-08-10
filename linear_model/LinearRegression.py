@@ -1,4 +1,5 @@
 import math
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -72,3 +73,20 @@ class LinearRegression(object):
 
     def predict(self, x):
         return np.dot(x, self.weight) + self.bias
+
+    def plot(self, x, y, num=10):
+        n, m = x.shape
+        assert n >= 10, "Not enough samples to plot, {} is needed, only find {}.".format(num, n)
+        assert m == 1, "Dimension of `x` is {}, but 1 is needed, only support 2-D plot.".format(m)
+        plt.figure()
+        idx = np.random.randint(0, n, num)
+        plt.scatter(x[idx], y[idx])
+        x_min, x_max = min(x[idx]), max(x[idx])
+        x_min -= 0.05 * (x_max - x_min)
+        x_max += 0.05 * (x_max - x_min)
+        x_line = np.array([x_min, x_max])
+        y_line = self.predict(x_line)
+        plt.plot(x_line, y_line)
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.show()
