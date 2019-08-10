@@ -1,11 +1,8 @@
-import logging
 import numpy as np
 from dataset.create_toy_data import toy_data_for_linear_regression
-from utils.preprocessing import standardize
 from linear_model.LinearRegression import LinearRegression
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     weight = np.array([2.0])
     bias = -1.0
     test = np.array([[0], [1], [2]])
